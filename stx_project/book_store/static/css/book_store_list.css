@@ -1,0 +1,12 @@
+img{
+    float: left;
+    width:  100px;
+    height: 100px;
+    object-fit: cover;
+    transition: transform .3s;
+}
+
+img:hover{
+    border: 1px solid;
+    transform: scale(1.5, 2);
+}

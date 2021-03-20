@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block bootstrap5_extra_head %}
+<link rel="stylesheet" href="{% static 'css/book_store_list.css' %}">
+{% endblock bootstrap5_extra_head %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row mt-4 p-3 border border-dark rounded">
+        <div class="col">
+
+            <form type="GET" action="{% url 'book:book-search' %}">
+                <div class="row ">
+                    <div class="col-auto border-bottom border-dark mb-2">
+
+                        <h4 class="text-primary"><b>Search</b></h4>
+                    </div>
+                </div>
+
+                <div class="row search-fields">
+                    <div class="col-auto">
+                        <div class="row justify-content-between mt-2">
+                            <div class="col-auto">
+                                <label><b>Title:</b></label>
+                            </div>
+                            <div class="col-auto input-group-sm">
+                                <input class="form-control" type="text" name="title" value="{{title}}">
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-between mt-2">
+                            <div class="col-auto ">
+                                <label><b>Author:</b></label>
+                            </div>
+                            <div class="col-auto input-group-sm">
+                                <input class="form-control" type="text" name="author" value="{{author}}">
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-between mt-2">
+                            <div class="col-auto">
+                                <label><b>Language:</b></label>
+                            </div>
+                            <div class="col-auto input-group-sm">
+                                <input class="form-control" type="text" name="language" value="{{language}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-auto">
+                        <div class="row justify-content-between mt-2">
+                            <div class="col-auto">
+                                <label><b>Date from:</b></label>
+                                <i class="fas fa-level-up-alt"></i>
+                            </div>
+                            <div class="col-auto input-group-sm">
+                                <input class="form-control" type="date" name="publish_date_gte"
+                                    value="{{publish_date_gte}}" value="{{publish_date_gt}}">
+                            </div>
+                        </div>
+                        <div class="row justify-content-between mt-2">
+                            <div class="col-auto">
+                                <label><b>Date to:</b></label>
+                                <i class="fas fa-level-down-alt"></i>
+                            </div>
+                            <div class="col-auto input-group-sm">
+                                <input class="form-control" type="date" name="publish_date_lte"
+                                    value="{{publish_date_lte}}" value="{{publish_date_le}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-auto mt-2" style="display: grid;">
+                        <div class="flex-row align-self-start">
+                            <a href="{% url 'book:book-list' %}">
+                                <button type="button" class="btn btn-outline-danger">Reset</button>
+                            </a>
+                        </div>
+                        <div class="flex-row align-self-end mt-4">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if book_list %}
+    <div class="row justify-content-md-center mt-5">
+        <div class="col">
+            <table class="table table-sm table-bordered table-striped">
+                <thead style="background-color: #d1d2d2;">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col" class="table-title-col" style="width: 25%;">Title</th>
+                        <th scope="col" class="table-author-col" style="width: 20%;">Author</th>
+                        <th scope="col">Publish date</th>
+                        <th scope="col">Identifier</th>
+                        <th scope="col" style="width: 5%;">Page count</th>
+                        <th scope="col" style="width: 1%;">Lang.</th>
+                        <th scope="col">Thumbnail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in book_list %}
+                    <tr>
+                        <th scope="col">{{forloop.counter}}</td>
+                        <td>
+                            <a href="#">{{book}}</a>
+                        </td>
+                        <td>
+                            {% for author in book.author.all %}
+                            <div>{{author}}</div>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {{book.publish_date|date:book.get_ui_date_type|default_if_none:"--"}}
+                        </td>
+                        <td>
+                            {% for isbn in book.isbn_set.all %}
+                            <div>
+                                <small><span class="badge bg-secondary">{{isbn.type}}</span></small> 
+                                {{isbn.number}}
+                            </div>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {{book.page_count|default_if_none:"--"}}
+                        </td>
+                        <td>
+                            {{book.language|default_if_none:"--"}}
+                        </td>
+                        <td>
+                            <a href="{{book.thumbnail_url}}">Thumbnail</a>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{%endblock%}

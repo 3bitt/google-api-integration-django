@@ -1,0 +1,42 @@
+{% extends 'bootstrap5/bootstrap5.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% block bootstrap5_extra_head %}
+    {% block extra_css %}
+    {% endblock extra_css %}
+{% endblock %}
+
+{% block bootstrap5_title %}Books Library{% endblock %}
+
+    {% block bootstrap5_content %} 
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand ms-3" href="#">Books Library</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" 
+                    href="{% url 'book:book-list' %}">
+                    <span>Books</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" 
+                    href="{% url 'import:import' %}">
+                    <span>Import</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock content %}
+    
+    {% endblock %}
