@@ -1,41 +1,47 @@
+from django.urls.base import reverse
+from .validators import validate_page_count, validate_language
 from django.db import models
 from django.db.models.deletion import CASCADE
 
 
 class Author(models.Model):
     full_name = models.CharField(max_length=255,
-                            null=False,
-                            blank=False
-                            )
-
+                                 null=False,
+                                 blank=False
+                                 )
 
     def __str__(self):
         return f'{self.full_name}'
 
 
 class Book(models.Model):
-    PARTIAL_YEAR='%Y'
-    PARTIAL_MONTH='%Y-%m'
-    PARTIAL_DAY='%Y-%m-%d'
+    PARTIAL_YEAR = '%Y'
+    PARTIAL_MONTH = '%Y-%m'
+    PARTIAL_DAY = '%Y-%m-%d'
     PARTIAL_CHOICES = (
-      (PARTIAL_YEAR, 'Year'),
-      (PARTIAL_MONTH, 'Month'),
-      (PARTIAL_DAY, 'Day'),
+        (PARTIAL_YEAR, 'Year'),
+        (PARTIAL_MONTH, 'Month'),
+        (PARTIAL_DAY, 'Day'),
     )
 
     title = models.CharField(max_length=255, null=False, blank=False)
     publish_date = models.DateField(null=True, blank=True)
-    publish_date_type = models.CharField('Date type', choices=PARTIAL_CHOICES, max_length=10, null=True, blank=True)
-    page_count = models.IntegerField(null=True, blank=True)
+    publish_date_type = models.CharField(
+        'Date type', choices=PARTIAL_CHOICES, max_length=10, null=True, blank=True)
+    page_count = models.IntegerField(null=True, blank=True, validators=[validate_page_count])
     thumbnail_url = models.URLField(max_length=255, null=True, blank=True)
-    language = models.CharField(max_length=2)
+    language = models.CharField(max_length=2, validators=[validate_language])
     author = models.ManyToManyField(Author, related_name='books')
+    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.title}' 
+        return f'{self.title}'
+
+    def get_absolute_url(self):
+        return reverse("book:book-detail", kwargs={"id": self.pk})
 
     def get_ui_date_type(self):
-        return str(self.publish_date_type).replace('%', '')        
+        return str(self.publish_date_type).replace('%', '')
 
 
 class Isbn(models.Model):

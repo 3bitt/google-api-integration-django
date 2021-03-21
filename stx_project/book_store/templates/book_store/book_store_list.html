@@ -86,8 +86,14 @@
         </div>
     </div>
 
+    <div class="row mt-3 pb-3 border-bottom ">
+        <div class="col-auto">
+            <a class="btn btn-success" href="{% url 'book:book-create' %}">Add book</a>
+        </div>
+    </div>
+
     {% if book_list %}
-    <div class="row justify-content-md-center mt-5">
+    <div class="row justify-content-md-center mt-3">
         <div class="col">
             <table class="table table-sm table-bordered table-striped">
                 <thead style="background-color: #d1d2d2;">
@@ -107,7 +113,7 @@
                     <tr>
                         <th scope="col">{{forloop.counter}}</td>
                         <td>
-                            <a href="#">{{book}}</a>
+                            <a href="{% url 'book:book-detail' book.id %}">{{book}}</a>
                         </td>
                         <td>
                             {% for author in book.author.all %}
@@ -141,7 +147,14 @@
             </table>
         </div>
     </div>
+    {% else %}
+    <div class="row mt-3">
+        <div class="col-auto">
+            <h4 class="text-danger">0 books found</h4>
+        </div>
+    </div>
     {% endif %}
 
 </div>
-{%endblock%}
+
+{% endblock content %}

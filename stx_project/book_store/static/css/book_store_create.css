@@ -1,0 +1,15 @@
+
+.add-new-identifier, .remove-last-identifier{
+    transition: .2s;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.add-new-identifier:hover, .remove-last-identifier:hover{
+    cursor: pointer;
+    font-weight: bold;
+    transform: ease;
+}
