@@ -63,7 +63,6 @@ class BookCreateView(CreateView):
     def form_valid(self, form: BookCreateForm):
 
         params = self.request.POST
-        print(params)
 
         year = int(params['publish_date_0'])
         month = int(params['publish_date_1'])
@@ -101,20 +100,63 @@ class BookCreateView(CreateView):
 
 class BookDetailView(DetailView):
     template_name = 'book_store/book_store_detail.html'
-    model = Book    
+    model = Book
     context_object_name = 'book'
-    edit_mode = False
+
 
 class BookUpdateView(UpdateView):
-    template_name = 'book_store/book_store_detail_update.html'
-    model = Book    
+    template_name = 'book_store/book_store_update.html'
+    model = Book
+    form_class = BookCreateForm
     context_object_name = 'book'
-    edit_mode = True
 
-    def get_success_url(self):
-        return reverse_lazy('book:book-detail', kwargs={'id': self.kwargs['pk']})
+    def form_valid(self, form: BookCreateForm):
+
+        params = self.request.POST
+
+        year = int(params['publish_date_0'])
+        month = int(params['publish_date_1'])
+        day = int(params['publish_date_2'])
+
+        Book.objects.filter(id=self.object.id).update(
+            title=params['title'].strip(),
+            publish_date=date(year=year, month=month, day=day),
+            publish_date_type=params['date_type'],
+            page_count=params['page_count'],
+            thumbnail_url=params['thumbnail_url'],
+            language=params['language']
+        )
+        authors = [author.strip()
+                   for author in params['authors'].split(',') if author.strip()]
+
+        authors_of_book = Author.objects.filter(books=self.object)
+        if authors_of_book:
+            authors_of_book.delete()
+
+        for author in authors:
+            new_author = Author.objects.create(full_name=author)
+            self.object.author.add(new_author)
+
+        ident_types = params.getlist('identifier_type')
+        idents = params.getlist('identifier')
+        identifiers = [item for item in zip(
+            ident_types, idents) if item[0] and item[1]]
+
+        book_identifiers = Isbn.objects.filter(book=self.object)
+
+        if book_identifiers:
+            book_identifiers.delete()
+
+        for identifier in identifiers:
+            new_ident = Isbn.objects.create(
+                type=identifier[0],
+                number=identifier[1],
+                book=self.object
+            )
+
+        return redirect('book:book-detail', self.kwargs['pk'])
+
 
 class BookDeleteView(DeleteView):
     model = Book
     success_url = reverse_lazy('book:book-list')
-
