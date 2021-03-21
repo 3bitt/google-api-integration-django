@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="col-auto">
                     <a href="{% url 'book:book-list' %}">
-                        <button class="btn btn-sm btn-info">
+                        <button class="btn btn-sm btn-secondary">
                             Back
                         </button>
                     </a>
@@ -30,122 +30,116 @@
                     </a>
                 </div>
                 <div class="col-auto ml-5 ms-5">
-                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#exampleModal">
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteBookModal">
                         Delete
-                    </button>
+                      </button>
                 </div>
-            </div>
-        </div>
-
-
-
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-danger" id="exampleModalLabel">Deleting</h5>
-                        <h5 class="modal-title ml-2"> {{book}}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure ?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
-                        <form method="POST" action="{% url 'book:book-delete' book.id %}">
-                            {% csrf_token %}<input class="btn btn-danger" type="submit" value="Delete">
-                        </form>
+                <div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Are you sure ?</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary me-3" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-danger">Delete</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>
 
 
-        <div class="container mt-3">
-            <div class="row">
-                <div class="col-5 book-details">
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-5 book-details">
 
-                    <div class="row mb-3 details-row">
-                        <div class="col-4 fw-bold">
-                            <span>Title:</span>
-                        </div>
-                        <div class="col-8">
-                            {{book}}
-                        </div>
+                <div class="row mb-3 details-row">
+                    <div class="col-4 fw-bold">
+                        <span>Title:</span>
                     </div>
-                    <div class="row mb-3 details-row">
-                        <div class="col-4 fw-bold">
-                            <span>Authors:</span>
-                        </div>
-                        <div class="col-6">
-                            {% if book.authors %}
-                                {% for author in book.author.all %}
-                                    <div>{{author}}</div>
-                                {% endfor %}
-                            {% else %}
-                                <i>(unknown)</i>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row mb-3 details-row">
-                        <div class="col-4 fw-bold">
-                            <span>Publish date:</span>
-                        </div>
-                        <div class="col-6">
-                            <span>{{book.publish_date|date:book.get_ui_date_type|default_if_none:"--"}}</span>
-                        </div>
-                    </div>
-                    <div class="row mb-3 details-row">
-                        <div class="col-4 fw-bold">
-                            <span>Identifiers:</span>
-                        </div>
-                        <div class="col-6">
-                            {% if book.isbn_set.all %}
-                                {% for identifier in book.isbn_set.all %}
-                                <div>
-                                    <small><span class="badge bg-secondary">{{identifier.type}}</span></small>
-                                    {{identifier.number}}
-                                </div>
-                                {% endfor %}
-                            {% else %}
-                                <span>--</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row mb-3 details-row">
-                        <div class="col-4 fw-bold">
-                            <span>Page count:</span>
-                        </div>
-                        <div class="col-6">
-                            <span>{{book.page_count|default_if_none:"--"}}</span>
-                        </div>
-                    </div>
-                    <div class="row mb-3 details-row">
-                        <div class="col-4 fw-bold">
-                            <span>Language:</span>
-                        </div>
-                        <div class="col-6">
-                            <span>{{book.language|default_if_none:"--"}}</span>
-                        </div>
-                    </div>
-                    <div class="row mb-3 details-row">
-                        <div class="col-4 fw-bold">
-                            <span>Thumbnail:</span>
-                        </div>
-                        <div class="col-6">
-                            <a href="{{book.thumbnail_url}}">Link</a>
-                        </div>
+                    <div class="col-8">
+                        {{book}}
                     </div>
                 </div>
-
-                <div class="col-auto ms-3">
-                    <img src="{{book.thumbnail_url}}" alt="Image not found">
+                <div class="row mb-3 details-row">
+                    <div class="col-4 fw-bold">
+                        <span>Authors:</span>
+                    </div>
+                    <div class="col-6">
+                        {% if book.authors %}
+                        {% for author in book.author.all %}
+                        <div>{{author}}</div>
+                        {% endfor %}
+                        {% else %}
+                        <i>(unknown)</i>
+                        {% endif %}
+                    </div>
                 </div>
+                <div class="row mb-3 details-row">
+                    <div class="col-4 fw-bold">
+                        <span>Publish date:</span>
+                    </div>
+                    <div class="col-6">
+                        <span>{{book.publish_date|date:book.get_ui_date_type|default_if_none:"--"}}</span>
+                    </div>
+                </div>
+                <div class="row mb-3 details-row">
+                    <div class="col-4 fw-bold">
+                        <span>Identifiers:</span>
+                    </div>
+                    <div class="col-6">
+                        {% if book.isbn_set.all %}
+                        {% for identifier in book.isbn_set.all %}
+                        <div>
+                            <small><span class="badge bg-secondary">{{identifier.type}}</span></small>
+                            {{identifier.number}}
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <span>--</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-3 details-row">
+                    <div class="col-4 fw-bold">
+                        <span>Page count:</span>
+                    </div>
+                    <div class="col-6">
+                        <span>{{book.page_count|default_if_none:"--"}}</span>
+                    </div>
+                </div>
+                <div class="row mb-3 details-row">
+                    <div class="col-4 fw-bold">
+                        <span>Language:</span>
+                    </div>
+                    <div class="col-6">
+                        <span>{{book.language|default_if_none:"--"}}</span>
+                    </div>
+                </div>
+                <div class="row mb-3 details-row">
+                    <div class="col-4 fw-bold">
+                        <span>Thumbnail:</span>
+                    </div>
+                    <div class="col-6">
+                        <a href="{{book.thumbnail_url}}">Link</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-auto ms-3">
+                <img src="{{book.thumbnail_url}}" alt="Image not found">
             </div>
         </div>
     </div>
-    {% endblock content %}
+
+
+
+</div>
+{% endblock content %}
