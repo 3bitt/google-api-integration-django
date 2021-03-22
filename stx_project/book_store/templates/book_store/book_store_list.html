@@ -126,7 +126,7 @@
                         <td>
                             {% for isbn in book.isbn_set.all %}
                             <div>
-                                <small><span class="badge bg-secondary">{{isbn.type}}</span></small> 
+                                <small><span class="badge bg-secondary">{{isbn.get_ui_identifier_type}}</span></small> 
                                 {{isbn.number}}
                             </div>
                             {% endfor %}
