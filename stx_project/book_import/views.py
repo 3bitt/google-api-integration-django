@@ -48,17 +48,18 @@ class FetchBooksFromAPI(TemplateView):
                       context={
                           'data': books_data,
                           'user_input': request_dict,
-                          'api_resource': api_response.url,
+                          'api_resource': api_query,
                           'success_import': self.success_import})
 
 
 class SaveBooksInDB(View, ContextMixin):
+    API_URL = 'https://www.googleapis.com/books/v1/volumes?q='
     http_method_names = ['post']
 
     def post(self, request, *args, **kwargs):
         api_resource = self.kwargs['resource']
 
-        api_data = requests.get(api_resource).content
+        api_data = requests.get(self.API_URL + api_resource).content
         mapped_data = json.loads(
             api_data, object_hook=lambda d: MappingProxyType(d))
 
