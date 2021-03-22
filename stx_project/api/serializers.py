@@ -1,10 +1,6 @@
-from django.db.models import fields
-from django.utils.regex_helper import flatten_result
-from rest_framework.fields import ModelField, SerializerMethodField
-from rest_framework.routers import flatten
-from book_store.models import Book, Author, Isbn
 from rest_framework import serializers
-from datetime import date
+from rest_framework.fields import SerializerMethodField
+from book_store.models import Book, Author, Isbn
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -38,7 +34,7 @@ class BookSerializer(serializers.ModelSerializer):
     def get_publishDate(self, obj):
         if obj.publish_date:
             return obj.publish_date.strftime(obj.publish_date_type)
-    
+
     def get_thumbnailUrl(self, obj):
         if obj.thumbnail_url:
             return obj.thumbnail_url

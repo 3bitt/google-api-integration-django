@@ -1,7 +1,7 @@
 from django.urls.base import reverse
-from .validators import validate_page_count, validate_language
 from django.db import models
 from django.db.models.deletion import CASCADE
+from .validators import validate_page_count, validate_language
 
 
 class Author(models.Model):
@@ -27,8 +27,10 @@ class Book(models.Model):
     title = models.CharField(max_length=255, null=False, blank=False)
     publish_date = models.DateField(null=True, blank=True)
     publish_date_type = models.CharField(
-        'Date type', choices=PARTIAL_CHOICES, max_length=10, null=True, blank=True)
-    page_count = models.IntegerField(null=True, blank=True, validators=[validate_page_count])
+        'Date type', choices=PARTIAL_CHOICES,
+        max_length=10, null=True, blank=True)
+    page_count = models.IntegerField(
+        null=True, blank=True, validators=[validate_page_count])
     thumbnail_url = models.URLField(max_length=255, null=True, blank=True)
     language = models.CharField(max_length=2, validators=[validate_language])
     author = models.ManyToManyField(Author, related_name='books')

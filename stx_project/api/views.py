@@ -1,15 +1,16 @@
-from django.db.models import Q
-from django_filters import rest_framework as filters
-import django_filters
-from django_filters.filters import DateFromToRangeFilter
-from django_filters.filterset import FilterSet
-from rest_framework import mixins, views, viewsets
-from rest_framework import permissions
-from rest_framework import generics
-from rest_framework.generics import ListAPIView
-from .serializers import BookSerializer
 from dateutil import parser as date_parser
-from book_store.models import Book, Author
+from django.db.models import Q
+from rest_framework import mixins, viewsets
+from book_store.models import Book
+from .serializers import BookSerializer
+
+''' Available query parameters:
+    title
+    authors
+    language
+    publishDateFrom
+    publishDateTo
+'''
 
 
 class BookViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):

@@ -7,8 +7,15 @@
     -ms-user-select: none;
     user-select: none;
 }
+
 .add-new-identifier:hover, .remove-last-identifier:hover{
     cursor: pointer;
     font-weight: bold;
     transform: ease;
+}
+
+.bg-style{
+    background-color: #f7f6f6;
+    border-radius: .5rem;
+    box-shadow: 0px 0px 2px 1px #a0a0a0;
 }

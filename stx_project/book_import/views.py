@@ -1,16 +1,13 @@
-from django.http.request import HttpRequest, QueryDict
-from django.shortcuts import redirect, render
-from django.views.generic import TemplateView
-from django.views.generic.base import ContextMixin, View
 import requests
 import json
 from types import MappingProxyType
-from book_store.models import Book, Author, Isbn
+from django.http.request import QueryDict
+from django.shortcuts import redirect, render
+from django.views.generic import TemplateView
+from django.views.generic.base import ContextMixin, View
 from dateutil import parser as date_parser
 from .helpers import get_date_format
-
-from requests.models import Response
-# Create your views here.
+from book_store.models import Book, Author, Isbn
 
 
 class FetchBooksFromAPI(TemplateView):
@@ -40,13 +37,11 @@ class FetchBooksFromAPI(TemplateView):
 
         for key, val in request_dict.dict().items():
 
-            if (key in self.FILTERS
-                    and key != 'intext'
-                    and val.strip()):
+            if (key in self.FILTERS and key != 'intext' and val.strip()):
 
                 api_query += f'+{key}:{val}'
 
-        api_response: Response = requests.get(self.API_URL + api_query)
+        api_response = requests.get(self.API_URL + api_query)
         books_data = json.loads(api_response.content)
 
         return render(request, 'book_import/fetch_books.html',
@@ -59,10 +54,6 @@ class FetchBooksFromAPI(TemplateView):
 
 class SaveBooksInDB(View, ContextMixin):
     http_method_names = ['post']
-
-    # agww    returns 10
-    # aghmx     return 8
-    # safsafw   return 5
 
     def post(self, request, *args, **kwargs):
         api_resource = self.kwargs['resource']

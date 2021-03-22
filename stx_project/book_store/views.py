@@ -1,18 +1,11 @@
 from datetime import date
-from django.http import HttpResponseRedirect
-from django.views.generic.edit import UpdateView
-from .forms import BookCreateForm, DateSelectorWidget
-from django.http.request import QueryDict
-from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
-from django.views.generic import View, ListView, CreateView, DetailView, DeleteView
 from django.db.models import Q
-from requests.api import request
+from django.views.generic.edit import UpdateView
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, DetailView, DeleteView
+from .forms import BookCreateForm
 from .models import Book, Author, Isbn
-from django.forms.models import modelform_factory
-from dateutil import parser as date_parser
-
-# Create your views here.
 
 
 class BookListView(ListView):
@@ -78,7 +71,9 @@ class BookCreateView(CreateView):
         )
 
         authors = [author.strip()
-                   for author in params['authors'].split(',') if author.strip()]
+                   for author in params['authors'].split(',')
+                   if author.strip()]
+
         for author in authors:
             a = Author.objects.create(full_name=author)
             new_book.author.add(a)
@@ -127,7 +122,8 @@ class BookUpdateView(UpdateView):
             language=params['language']
         )
         authors = [author.strip()
-                   for author in params['authors'].split(',') if author.strip()]
+                   for author in params['authors'].split(',')
+                   if author.strip()]
 
         authors_of_book = Author.objects.filter(books=self.object)
         if authors_of_book:
