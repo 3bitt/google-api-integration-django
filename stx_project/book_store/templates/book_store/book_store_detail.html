@@ -102,7 +102,7 @@
                         {% if book.isbn_set.all %}
                         {% for identifier in book.isbn_set.all %}
                         <div>
-                            <small><span class="badge bg-secondary">{{isbn.get_ui_identifier_type}}</span></small>
+                            <small><span class="badge bg-secondary">{{identifier.get_ui_identifier_type}}</span></small>
                             {{identifier.number}}
                         </div>
                         {% endfor %}
