@@ -4,15 +4,17 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 {% block bootstrap5_extra_head %}
-<link rel="stylesheet" href="{% static 'css/book_store_create.css' %}">
+<link rel="stylesheet" href="{% static 'css/book_store_update.css' %}">
 {% endblock bootstrap5_extra_head %}
 
 {% block content %}
 
+{{ book.get_ui_date_type|json_script:'datetype_from_template' }}
+
 <div class="container">
     <div class="row mt-3">
         <div class="col">
-            <h3>New book</h3>
+            <h3>Update book details</h3>
         </div>
     </div>
     <div class="row mt-3">
@@ -20,7 +22,7 @@
             <form class="form" method="post">
                 {% csrf_token %}
                 <div class="row">
-                    <div class="col-auto bg-style">
+                    <div class="col-auto">
 
                         <div class="row mb-3 justify-content-between align-items-center">
                             <div class="col-auto">
@@ -38,8 +40,8 @@
                                 <div><small>Use comma as separator</small></div>
                             </div>
                             <div class="col-auto">
-                                <textarea class="form-control" name="authors" placeholder="Mark Twain, J.K. Rowling ..."
-                                    cols="23" rows="2" minlength="0" maxlength="255"></textarea>
+                                <textarea class="form-control" name="authors" cols="23" rows="2" minlength="0"
+                                    maxlength="255">{% for author in book.author.all %}{{author}}, {% endfor %}</textarea>
                             </div>
                             <div class="error-text small text-danger" style="text-align: end;">
                                 {{form.author.errors|striptags }}</div>
@@ -58,15 +60,16 @@
                             </div>
                             <div class="col-auto justify-content-between">
                                 <div>
-                                    <input class="date-type-radios" type="radio" id="year" name="date_type" value="%Y">
+                                    
+                                    <input {% if book.get_ui_date_type == "Y" %}} checked {% endif %} class="date-type-radios" type="radio" id="year" name="date_type" value="%Y">
                                     <label class="me-2" for="contactChoice1">Year</label>
 
-                                    <input class="date-type-radios" type="radio" id="month" name="date_type"
+                                    <input {% if book.get_ui_date_type == "Y-m" %}} checked {% endif %} class="date-type-radios" type="radio" id="month" name="date_type"
                                         value="%Y-%m">
                                     <label class="me-2" for="contactChoice2">Month</label>
 
-                                    <input class="date-type-radios" type="radio" id="day" name="date_type"
-                                        value="%Y-%m-%d" checked>
+                                    <input {% if book.get_ui_date_type == "Y-m-d" %}} checked {% endif %} class="date-type-radios" type="radio" id="day" name="date_type"
+                                        value="%Y-%m-%d">
                                     <label for="contactChoice3">Day</label>
                                 </div>
                             </div>
@@ -104,7 +107,7 @@
 
                     </div>
 
-                    <div class="col-auto ms-2 identifiers-drop bg-style">
+                    <div class="col-auto ms-2 identifiers-drop">
                         <div class="row mb-2 border-bottom">
                             <div class="col-auto">
                                 <h5>Identifiers</h5>
@@ -114,31 +117,53 @@
                                 <small class="text-success add-new-identifier px-1">Add more</small>
                             </div>
                             <div class="col-auto ml-3">
-                                <small class="text-danger remove-last-identifier px-1" hidden>Remove last</small>
+                                <small class="text-danger remove-last-identifier px-1">Remove last</small>
                             </div>
                         </div>
-
-                        <div class="row identifiers align-items-center">
-                            <div class="col-auto">
-                                <label>Type:</label>
+                        {% if book.isbn_set.all %}
+                            {% for identifier in book.isbn_set.all %}
+                            <div class="row identifiers align-items-center">
+                                <div class="col-auto">
+                                    <label>Type:</label>
+                                </div>
+                                <div class="col-auto">
+                                    <select class="form-select identifier-types" name="identifier_type">
+                                        <option value="{{identifier.type}}" selected>{{identifier.get_ui_identifier_type}}</option>
+                                        <option value="ISBN_13">ISBN 13</option>
+                                        <option value="ISBN_10">ISBN 10</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-auto">
+                                    <label>Number:</label>
+                                </div>
+                                <div class="col-auto">
+                                    <input class="form-control" type="text" name="identifier" value="{{identifier.number}}">
+                                </div>
                             </div>
-                            <div class="col-auto">
-                                <select class="form-select identifier-types" name="identifier_type">
-                                    <option value="" selected>---</option>
-                                    <option value="ISBN_13">ISBN 13</option>
-                                    <option value="ISBN_10">ISBN 10</option>
-                                    <option value="OTHER">Other</option>
-                                </select>
+                            {% endfor %}
+                        {% else %}
+                            <div class="row identifiers align-items-center">
+                                <div class="col-auto">
+                                    <label>Type:</label>
+                                </div>
+                                <div class="col-auto">
+                                    <select class="form-select identifier-types" name="identifier_type">
+                                        <option value="" selected>---</option>
+                                        <option value="ISBN_13">ISBN 13</option>
+                                        <option value="ISBN_10">ISBN 10</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-auto">
+                                    <label>Number:</label>
+                                </div>
+                                <div class="col-auto">
+                                    <input class="form-control" type="text" name="identifier">
+                                </div>
                             </div>
-                            <div class="col-auto">
-                                <label>Number:</label>
-                            </div>
-                            <div class="col-auto">
-                                <input class="form-control" type="text" name="identifier">
-                            </div>
-                        </div>
+                        {% endif %}
                     </div>
-
                 </div>
                 <div class="row mt-2">
                     <div class="col-auto">
@@ -150,6 +175,8 @@
 
     </div>
 </div>
+
+
 
 <script src="{% static 'js/toogle_date_type.js' %}"></script>
 <script src="{% static 'js/add_identifiers.js' %}"></script>

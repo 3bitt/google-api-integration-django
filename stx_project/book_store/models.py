@@ -51,3 +51,6 @@ class Isbn(models.Model):
 
     def __str__(self):
         return f'{self.number}'
+
+    def get_ui_identifier_type(self):
+        return str(self.type).replace('_', ' ')

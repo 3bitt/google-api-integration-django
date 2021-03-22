@@ -23,7 +23,7 @@
                     </a>
                 </div>
                 <div class="col-auto offset-3">
-                    <a href="{% url 'book:book-detail-update' book.id %}">
+                    <a href="{% url 'book:book-update' book.id %}">
                         <button class="btn btn-sm btn-warning">
                             Edit
                         </button>
@@ -45,7 +45,9 @@
                             </div>                            
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary me-3" data-bs-dismiss="modal">Cancel</button>
-                                <button type="button" class="btn btn-danger">Delete</button>
+                                <form method="POST" action="{% url 'book:book-delete' book.id %}">
+                                    {% csrf_token %}<input class="btn btn-danger" type="submit" value="Delete">
+                                  </form>
                             </div>
                         </div>
                     </div>
@@ -73,12 +75,14 @@
                         <span>Authors:</span>
                     </div>
                     <div class="col-6">
-                        {% if book.authors %}
-                        {% for author in book.author.all %}
-                        <div>{{author}}</div>
-                        {% endfor %}
+                        {% if book.author %}
+                            {% for author in book.author.all %}
+                                <div class="row specific-author">
+                                    <div class="col-auto">{{author}}</div>
+                                </div>
+                            {% endfor %}
                         {% else %}
-                        <i>(unknown)</i>
+                            <i>(unknown)</i>
                         {% endif %}
                     </div>
                 </div>

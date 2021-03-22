@@ -10,103 +10,123 @@
 
     <div class="row mt-3">
         <div class="col-auto">
-            <h3 class="m-0">Search for books</h3>
+            <h3 class="m-0">Search for books using Google Books API</h3>
         </div>
     </div>
 
     <div class="row mt-5 pb-3 border-bottom">
-        <form action="{% url 'import:import' %}" method="post">
-            {%csrf_token%}
+        <div class="col-auto search-div">
 
-            <div class="row mb-2 border-bottom">
-                <div class="col-auto pe-1">
-                    <h5>Filters</h5>
-                </div>
-            </div>
 
-            <div class="row mb-2">
-                <div class="col-2">
-                    Contains text:
+            <form action="{% url 'import:import' %}" method="post">
+                {%csrf_token%}
+
+                <div class="row filter-title align-items-center">
+                    <div class="col-auto">
+                        <h4>Filters</h4>
+                    </div>
                 </div>
-                <div class="col">
-                    <input type="text" name="intext" value="{{user_input.intext}}">
+
+                <div class="row py-2 search-row">
+                    <div class="col-4">
+                        Contains text:
+                    </div>
+                    <div class="col">
+                        <input class="form-control form-control-sm" type="text" name="intext"
+                            value="{{user_input.intext}}">
+                    </div>
                 </div>
+                <div class="row py-2 search-row">
+                    <div class="col-4">
+                        Title:
+                    </div>
+                    <div class="col">
+                        <input class="form-control form-control-sm" type="text" name="intitle"
+                            value="{{user_input.intitle}}">
+                    </div>
+                </div>
+                <div class="row py-2 search-row">
+                    <div class="col-4">
+                        Author:
+                    </div>
+                    <div class="col">
+                        <input class="form-control form-control-sm" type="text" name="inauthor"
+                            value="{{user_input.inauthor}}">
+                    </div>
+                </div>
+                <div class="row py-2 search-row">
+                    <div class="col-4">
+                        Publisher:
+                    </div>
+                    <div class="col">
+                        <input class="form-control form-control-sm" type="text" name="inpublisher"
+                            value="{{user_input.inpublisher}}">
+                    </div>
+                </div>
+                <div class="row py-2 search-row">
+                    <div class="col-4">
+                        Category:
+                    </div>
+                    <div class="col">
+                        <input class="form-control form-control-sm" type="text" name="subject"
+                            value="{{user_input.subject}}">
+                    </div>
+                </div>
+                <div class="row py-2 search-row">
+                    <div class="col-4">
+                        ISBN:
+                    </div>
+                    <div class="col">
+                        <input class="form-control form-control-sm" type="text" name="isbn" value="{{user_input.isbn}}">
+                    </div>
+                </div>
+                <div class="row py-2 search-row">
+                    <div class="col-4">
+                        Library of Congress<br>Control Number:
+                    </div>
+                    <div class="col align-self-center">
+                        <input class="form-control form-control-sm" type="text" name="lccn" value="{{user_input.lccn}}">
+                    </div>
+                </div>
+                <div class="row py-2 search-row">
+                    <div class="col-4">
+                        Online Computer Library Center number:
+                    </div>
+                    <div class="col align-self-center">
+                        <input class="form-control form-control-sm" type="text" name="oclc" value="{{user_input.oclc}}">
+                    </div>
+                </div>
+                <div class="row my-2">
+                    <div class="col-auto">
+                        <input class="btn btn-primary" type="submit" value="Search">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col success-message">
+            <div >
+
+                {% if view.success_import %}
+                <div>
+                    <h4 class="text-success"><b>Import successfull</b></h4>
+                </div>
+                <div>
+                    <a href="{% url 'book:book-list' %}">Go to books library</a>
+                </div>
+                {% endif %}
             </div>
-            <div class="row mb-2">
-                <div class="col-2">
-                    Title:
-                </div>
-                <div class="col">
-                    <input type="text" name="intitle" value="{{user_input.intitle}}">
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-2">
-                    Author:
-                </div>
-                <div class="col">
-                    <input type="text" name="inauthor" value="{{user_input.inauthor}}">
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-2">
-                    Publisher:
-                </div>
-                <div class="col">
-                    <input type="text" name="inpublisher" value="{{user_input.inpublisher}}">
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-2">
-                    Category:
-                </div>
-                <div class="col">
-                    <input type="text" name="subject" value="{{user_input.subject}}">
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-2">
-                    ISBN:
-                </div>
-                <div class="col">
-                    <input type="text" name="isbn" value="{{user_input.isbn}}">
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-2">
-                    Library of Congress<br>Control Number:
-                </div>
-                <div class="col align-self-center">
-                    <input type="text" name="lccn" value="{{user_input.lccn}}">
-                </div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-2">
-                    Online Computer Library Center number:
-                </div>
-                <div class="col align-self-center">
-                    <input type="text" name="oclc" value="{{user_input.oclc}}">
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col-auto">
-                    <input class="btn btn-primary" type="submit" value="Search">
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
 
     <div class="row">
-        {% if view.success_import %}
-            <div><h4 class="text-success"><b>Import successfull</b></h4></div>
-        {% endif %}
+
         {% if data.totalItems > 0 %}
         <div class="row mt-4">
             <div class="col-auto ms-auto">
                 <form method="post" action="{% url 'import:save-resource' api_resource %}">
                     {% csrf_token %}
                     <input class="btn btn-success" type="submit" value="Import">
-                </form>                
+                </form>
             </div>
         </div>
         <div class="row mt-4">

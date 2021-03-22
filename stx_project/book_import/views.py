@@ -36,29 +36,29 @@ class FetchBooksFromAPI(TemplateView):
         request_dict = QueryDict.copy(request.POST)
         del request_dict['csrfmiddlewaretoken']
 
-        query = request_dict['intext'].strip()
+        api_query = request_dict['intext'].strip()
 
-        for key, val in list(request_dict.items())[1:]:
+        for key, val in request_dict.dict().items():
 
             if (key in self.FILTERS
                     and key != 'intext'
                     and val.strip()):
 
-                query += f'+{key}:{val}'
+                api_query += f'+{key}:{val}'
 
-        api_response: Response = requests.get(self.API_URL + query)
+        api_response: Response = requests.get(self.API_URL + api_query)
         books_data = json.loads(api_response.content)
 
-        return render(request, 'book_import/fetch_books.html', 
-            context={
-                'data': books_data,
-                'user_input': request_dict, 
-                'api_resource': api_response.url, 
-                'success_import': self.success_import})
+        return render(request, 'book_import/fetch_books.html',
+                      context={
+                          'data': books_data,
+                          'user_input': request_dict,
+                          'api_resource': api_response.url,
+                          'success_import': self.success_import})
 
 
 class SaveBooksInDB(View, ContextMixin):
-    http_method_names = ['post', 'get']
+    http_method_names = ['post']
 
     # agww    returns 10
     # aghmx     return 8
@@ -67,19 +67,24 @@ class SaveBooksInDB(View, ContextMixin):
     def post(self, request, *args, **kwargs):
         api_resource = self.kwargs['resource']
 
-        data = requests.get(api_resource).content
-        obj = json.loads(data, object_hook=lambda d: MappingProxyType(d))
+        api_data = requests.get(api_resource).content
+        mapped_data = json.loads(
+            api_data, object_hook=lambda d: MappingProxyType(d))
 
-        existing_isbn = Isbn.objects.values_list('number', flat=True)
+        existing_isbns = Isbn.objects.values_list('number', flat=True)
+        existing_book_titles = Book.objects.values_list('title', flat=True)
         authors_created = []
 
-        for book in obj['items']:
+        for book in mapped_data['items']:
             book = book['volumeInfo']
 
             if 'industryIdentifiers' in book:
                 for isbn in book['industryIdentifiers']:
-                    if isbn['identifier'] in existing_isbn:
+                    if isbn['identifier'] in existing_isbns:
                         break
+
+            if book['title'] in existing_book_titles:
+                break
 
             if 'authors' in book:
                 for author_name in book['authors']:
@@ -105,9 +110,7 @@ class SaveBooksInDB(View, ContextMixin):
                 new_book.publish_date_type = get_date_format(
                     book.get('publishedDate'))
 
-            if 'imageLinks' not in book:
-                new_book.thumbnail_url = None
-            else:
+            if 'imageLinks' in book:
                 new_book.thumbnail_url = book.get(
                     'imageLinks').get('thumbnail')
 

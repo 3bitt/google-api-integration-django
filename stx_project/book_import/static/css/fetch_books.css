@@ -16,4 +16,24 @@ img:hover{
     border: 1px solid;
     transform: scale(2, 2.5);
 }
+.search-div{
+    background-color: #e8e8e8;
+    border-radius: .3rem;
+}
+.filter-title{
+    place-content: center;
+    border-bottom: 1px solid rgb(142, 158, 158);
+    margin-top: .2rem;
+}
+.search-row{
+    padding: .1rem;
+    align-items: center;
+    border-bottom: 1px solid #c5c4c4;
+}
+.success-message{
+    margin-left: 2rem;
+}
+a{
+    text-decoration: none;
+}
 

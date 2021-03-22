@@ -3,6 +3,15 @@ const year_input = document.getElementById('id_publish_date_0');
 const month_input = document.getElementById('id_publish_date_1');
 const day_input = document.getElementById('id_publish_date_2');
 
+const date_type = JSON.parse(document.getElementById('datetype_from_template').textContent);
+
+switch (date_type){
+    case 'Y':
+        day_input.setAttribute('hidden', true);
+        month_input.setAttribute('hidden', true);
+    case 'Y-m':
+        day_input.setAttribute('hidden', true);
+}
 
 radio_buttons.forEach(button => button.addEventListener('click', function(e){
     toogle_fields(button)

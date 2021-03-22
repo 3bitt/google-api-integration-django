@@ -19,17 +19,14 @@ add_identifier_btn.addEventListener('click', function (e) {
 
 remove_identifier_btn.addEventListener('click', function (e) {
     let current_identifiers_list = document.querySelectorAll('.identifiers')
-    if (current_identifiers_list.length > 1) {
+    if (current_identifiers_list.length > 0) {
         current_identifiers_list[current_identifiers_list.length - 1].remove()
         add_identifier_btn.style.pointerEvents = "all";
 
-        if (current_identifiers_list.length === 2) {
+        if (current_identifiers_list.length === 1) {
             remove_identifier_btn.setAttribute('hidden', true)
             add_identifier_btn.style.pointerEvents = "all";
         }
-    }
-    if (current_identifiers_list.length === limit) {
-        add_identifier_btn.removeAttribute('hidden')
     }
 })
 

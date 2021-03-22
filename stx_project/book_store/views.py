@@ -28,29 +28,29 @@ class BookSearchView(ListView):
     def get_queryset(self):
 
         query_params = self.request.GET
-        params = {k: query_params[k] for k in query_params if query_params[k]}
-        filter = Q(title__contains=query_params['title'])
+        filter = Q()
+        for key, value in query_params.items():
+            if value and key == 'title':
+                filter.add(Q(title__contains=value), Q.AND)
+            if value and key == 'author':
+                filter.add(Q(author__full_name__contains=value), Q.AND)
+            if value and key == 'language':
+                filter.add(Q(language__contains=value), Q.AND)
+            if value and key == 'publish_date_gte':
+                filter.add(Q(publish_date__gte=value), Q.AND)
+            if value and key == 'publish_date_lte':
+                filter.add(Q(publish_date__lte=value), Q.AND)
 
-        if 'author' in params:
-            filter.add(
-                Q(author__full_name__contains=query_params['author']), Q.AND)
-        if 'language' in params:
-            filter.add(Q(language__contains=query_params['language']), Q.AND)
-        if 'publish_date_gte' in params:
-            filter.add(Q(publish_date__gte=params['publish_date_gte']), Q.AND)
-        if 'publish_date_lte' in params:
-            filter.add(Q(publish_date__lte=params['publish_date_lte']), Q.AND)
+        queryset = Book.objects.filter(filter).order_by('-created_date')
 
-        q = Book.objects.filter(filter).order_by('-created_date')
-
-        return q
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        params = {k: self.request.GET[k]
-                  for k in self.request.GET if self.request.GET[k]}
-        for k, v in params.items():
-            context[k] = v
+
+        for key, value in self.request.GET.items():
+            if value:
+                context[key] = value
         return context
 
 
