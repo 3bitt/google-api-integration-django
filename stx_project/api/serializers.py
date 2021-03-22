@@ -20,11 +20,12 @@ class BookSerializer(serializers.ModelSerializer):
     authors = SerializerMethodField()
     publishDate = SerializerMethodField()
     thumbnailUrl = SerializerMethodField()
+    pageCount = SerializerMethodField()
 
     class Meta:
         model = Book
         fields = ['title', 'authors', 'publishDate', 'identifiers',
-                  'page_count', 'language', 'thumbnailUrl']
+                  'pageCount', 'language', 'thumbnailUrl']
 
     def get_authors(self, obj):
         authors = Author.objects.filter(id__in=obj.author.all().values(
@@ -38,3 +39,7 @@ class BookSerializer(serializers.ModelSerializer):
     def get_thumbnailUrl(self, obj):
         if obj.thumbnail_url:
             return obj.thumbnail_url
+
+    def get_pageCount(self, obj):
+        if obj.page_count:
+            return obj.page_count
